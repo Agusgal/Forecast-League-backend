@@ -1,0 +1,12 @@
+node_modules
+.next
+.env*
+!.env.example
+.data
+*.tsbuildinfo
+.DS_Store
+
+.pnpm-store
+
+next-env.d.ts
+*.cookies
