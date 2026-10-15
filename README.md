@@ -2,11 +2,11 @@
 
 API independiente para una plataforma social de pronósticos probabilísticos: usuarios, preguntas, revisiones, consenso, precisión y ligas privadas. **Sin apuestas, dinero ni contratos negociables.**
 
-Extraído de [Forecast League](https://github.com/Agusgal/Forecast-League), commit [`57751f6`](https://github.com/Agusgal/Forecast-League/commit/57751f690e50c077d145d2a3a5c2ba7df7f844aa). Este repositorio tiene su propio servidor, dependencias, historial Git, pruebas y datos locales. No necesita clonar el proyecto original ni ejecutar su interfaz.
+Extraído de [Forecast League](https://github.com/Agusgal/Forecast-League), commit [`57751f6`](https://github.com/Agusgal/Forecast-League/commit/57751f690e50c077d145d2a3a5c2ba7df7f844aa). Este repositorio tiene su propio servidor, dependencias, historial Git, pruebas y datos locales. No necesitas clonar el proyecto original ni ejecutar su interfaz.
 
 ## Qué incluye y qué cambió al separarlo
 
-Se conservaron el dominio TypeScript, validaciones Zod, rutas de API, sesiones, autenticación local, adaptador Supabase, migración PostgreSQL, seed y pruebas del backend. Los datos de ejemplo están en español e incluyen escenarios argentinos explícitamente simulados.
+Se conservaron el dominio TypeScript, validaciones Zod, rutas de API, sesiones, autenticación local, adaptador Supabase, migración PostgreSQL, seed y pruebas del backend. 
 
 Se excluyeron pantallas, componentes, estilos, gráficos, iconos, cuentas personales, sesiones existentes y archivos de configuración privados. Las dependencias visuales fueron retiradas y el lockfile se regeneró. No se importó la base local de la aplicación original.
 
@@ -154,14 +154,6 @@ El bootstrap nunca entrega los pronósticos individuales ni razonamientos de otr
 
 **Supabase:** cookies de autenticación en el servidor, verificación del usuario mediante `getUser()`, token del usuario en consultas y permisos RLS/RPC en la base de datos. En producción las cookies requieren HTTPS. El prefijo `NEXT_PUBLIC_` se conserva por compatibilidad con la extracción; sus valores son una URL y una clave pública, nunca `service_role` o una clave secreta.
 
-### Frontend en otro repositorio
-
-Separar repositorios no implica permitir solicitudes entre orígenes. La API conserva la protección contra mutaciones de otro origen y no habilita CORS abierto. Un navegador en `http://localhost:3000` no puede mutar directamente `http://localhost:3002` con esta configuración.
-
-Para conectarlo, serví el frontend y encaminá `/api/*` y `/auth/callback` al backend bajo **el mismo origen público**, mediante un proxy inverso o la configuración de tu servidor. Conservá correctamente el host y protocolo públicos en ese despliegue y verificá las cookies de ida y vuelta. El frontend debe usar rutas relativas y no conservar rutas API competidoras. Esta integración no se aplicó al repositorio original.
-
-En Supabase, el origen público y `/auth/callback` deben estar autorizados como redirects. El flujo PKCE requiere conservar las cookies del navegador que inició el registro. El callback devuelve JSON; cualquier navegación posterior pertenece al cliente. Este servicio no implementa un flujo bearer específico para una app nativa.
-
 ## Configurar Supabase
 
 ```sh
@@ -206,25 +198,6 @@ Para el backend, eso se tradujo en sesión → validar probabilidad/plazo → pe
 
 Las decisiones visuales del proyecto original no se copiaron. Los campos de contrato como `visual` y `avatarColor` sí se conservan para compatibilidad con clientes; no incluyen implementación de interfaz.
 
-### Cómo usar los prompts de este repo
 
-La secuencia documentada propone: **contexto → reglas → recorrido mínimo → persistencia → seguridad → pruebas → extracción**. Cada etapa incluye resultados verificables. Las plantillas están identificadas como reconstrucciones, no como una transcripción literal. No contienen contraseñas, sesiones, datos de usuarios ni credenciales. Repetirlas con otro modelo o entorno no garantiza el mismo código; este snapshot y su lockfile son la referencia concreta.
-
-## Verificación y límites
-
-```sh
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm start
-# En otra terminal, con la demo local en ejecución:
-node scripts/smoke.mjs
 ```
 
-Verificado en esta extracción: **30 pruebas unitarias/de integración, 11 comprobaciones PostgreSQL, chequeo de tipos, compilación de producción y recorrido HTTP**. El recorrido HTTP usa datos temporales separados del proyecto original.
-
-Las pruebas automatizadas cubren dominio, propiedad de sesiones, registro/login, revisiones, plazos, consenso, ligas, administración, localización, errores/cookies de Supabase y callback independiente. `pnpm build` usa Webpack para generar una compilación de producción. El comando del harness PostgreSQL y su dependencia opcional están en la [guía de la base de datos](supabase/README.md#authorization-and-verification).
-
-El proyecto es un prototipo funcional. No incluye colas, emails propios, OAuth, recuperación de contraseña, rate limiting distribuido, cierre o resolución automáticos ni un despliegue operado en producción. Las tablas de competencias oficiales son una base de esquema; inscripción, snapshots de participantes y clasificación oficial siguen pendientes.
-
-Los datos personales de desarrollo, archivos `.env`, `.data`, dependencias instaladas y compilaciones quedan excluidos de Git.
